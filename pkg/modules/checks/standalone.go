@@ -3,6 +3,7 @@
 package checks
 
 import (
+	"github.com/stackup-wallet/stackup-bundler/pkg/entrypoint/simulation"
 	"math/big"
 	"sync"
 
@@ -11,7 +12,6 @@ import (
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/ethereum/go-ethereum/rpc"
 	"github.com/stackup-wallet/stackup-bundler/pkg/entrypoint"
-	"github.com/stackup-wallet/stackup-bundler/pkg/entrypoint/simulation"
 	"github.com/stackup-wallet/stackup-bundler/pkg/errors"
 	"github.com/stackup-wallet/stackup-bundler/pkg/modules"
 	"github.com/stackup-wallet/stackup-bundler/pkg/userop"
@@ -68,6 +68,24 @@ func (s *Standalone) ValidateOpValues() modules.UserOpHandlerFunc {
 			return errors.NewRPCError(errors.INVALID_FIELDS, err.Error(), err.Error())
 		}
 		return nil
+	}
+}
+
+// SimulateOpNoCheck no check returns a UserOpHandler that runs through simulation of new UserOps with the EntryPoint.
+func (s *Standalone) SimulateOpNoCheck() modules.UserOpHandlerFunc {
+	return func(ctx *modules.UserOpHandlerCtx) error {
+		gc := getCodeWithEthClient(s.eth)
+		g := new(errgroup.Group)
+		g.Go(func() error {
+			//rand := []byte("")
+			ch, err := getCodeHashes([]common.Address{}, gc)
+			if err != nil {
+				return errors.NewRPCError(errors.BANNED_OPCODE, err.Error(), err.Error())
+			}
+			return saveCodeHashes(s.db, ctx.UserOp.GetUserOpHash(ctx.EntryPoint, ctx.ChainID), ch)
+		})
+
+		return g.Wait()
 	}
 }
 
