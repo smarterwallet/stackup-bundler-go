@@ -6,9 +6,9 @@ services:
     container_name: "aa_wallet_stackup_bundler_go"
     ports:
       - "4337:4337"
-#    environment:
-#      ERC4337_BUNDLER_ETH_CLIENT_URL: https://polygon-mumbai.blockpi.network/v1/rpc/public
-#      ERC4337_BUNDLER_PRIVATE_KEY: prikey
-#      ERC4337_BUNDLER_SUPPORTED_ENTRY_POINTS: address
-#      ERC4337_BUNDLER_DATA_DIRECTORY: "/app/stackup_bundler"
+    environment:
+      ERC4337_BUNDLER_ETH_CLIENT_URL: https://polygon-mumbai.blockpi.network/v1/rpc/public
+      ERC4337_BUNDLER_PRIVATE_KEY: prikey
+      ERC4337_BUNDLER_SUPPORTED_ENTRY_POINTS: entry_point_contract_address
+      ERC4337_BUNDLER_DATA_DIRECTORY: "/app/stackup_bundler"
     restart: always
