@@ -1,0 +1,9 @@
+version: "3"
+
+services:
+  backend:
+    image: "w3ifun/stackup_bundler_go:latest"
+    container_name: "stackup_bundler_go"
+    ports:
+      - "4337:4337"
+    restart: always
