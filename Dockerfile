@@ -1,5 +1,8 @@
 FROM golang:1.19-buster as builder
 
+ENV GO111MODULE=on \
+    GOPROXY=https://goproxy.cn,direct
+
 # Create and change to the app directory.
 WORKDIR /app
 
