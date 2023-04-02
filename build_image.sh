@@ -3,7 +3,7 @@
 sudo make build
 version='1.0.0'
 
-repo_name="w3ifun/aa_wallet/stackup_bundler_go"
+repo_name="w3ifun/aa_wallet_stackup_bundler_go"
 image_name="${repo_name}:${version}"
 latest="${repo_name}:latest"
 sudo docker rmi -f $(docker images -q ${repo_name})

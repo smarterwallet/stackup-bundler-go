@@ -2,8 +2,8 @@ version: "3"
 
 services:
   backend:
-    image: "w3ifun/aa_wallet/stackup_bundler_go:latest"
-    container_name: "stackup_bundler_go"
+    image: "w3ifun/aa_wallet_stackup_bundler_go:latest"
+    container_name: "aa_wallet_stackup_bundler_go"
     ports:
       - "4337:4337"
     environment:
