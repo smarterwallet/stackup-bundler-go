@@ -1,7 +1,8 @@
 #!/bin/bash
+version=$1
+echo 'build version: '${version}
 
 sudo make build
-version=$1
 
 repo_name="w3ifun/aa_wallet_stackup_bundler_go"
 image_name="${repo_name}:${version}"
