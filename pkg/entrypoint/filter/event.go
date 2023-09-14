@@ -2,12 +2,12 @@ package filter
 
 import (
 	"context"
-	"math/big"
-
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethclient"
+	"github.com/spf13/viper"
 	"github.com/stackup-wallet/stackup-bundler/pkg/entrypoint"
+	"math/big"
 )
 
 func filterUserOperationEvent(
@@ -25,7 +25,7 @@ func filterUserOperationEvent(
 	}
 	toBlk := big.NewInt(0).SetUint64(bn)
 	startBlk := big.NewInt(0)
-	sub10kBlk := big.NewInt(0).Sub(toBlk, big.NewInt(10000))
+	sub10kBlk := big.NewInt(0).Sub(toBlk, big.NewInt(viper.GetInt64("erc4337_bundler_get_logs_gap")))
 	if sub10kBlk.Cmp(startBlk) > 0 {
 		startBlk = sub10kBlk
 	}
