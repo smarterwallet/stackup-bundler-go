@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/rs/zerolog/log"
 	"math/big"
 	"strings"
 
@@ -37,6 +38,7 @@ func GetUserOperationByHash(
 	}
 
 	if it.Next() {
+		log.Info().Msgf("Found userOpHash %s. Tx hash: %s", userOpHash, it.Event.Raw.TxHash.String())
 		receipt, err := eth.TransactionReceipt(context.Background(), it.Event.Raw.TxHash)
 		if err != nil {
 			return nil, err
