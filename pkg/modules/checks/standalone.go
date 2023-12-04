@@ -96,7 +96,6 @@ func (s *Standalone) SimulateOp() modules.UserOpHandlerFunc {
 		g := new(errgroup.Group)
 		g.Go(func() error {
 			sim, err := simulation.SimulateValidation(s.rpc, ctx.EntryPoint, ctx.UserOp)
-
 			if err != nil {
 				return errors.NewRPCError(errors.REJECTED_BY_EP_OR_ACCOUNT, err.Error(), err.Error())
 			}
@@ -132,6 +131,39 @@ func (s *Standalone) SimulateOp() modules.UserOpHandlerFunc {
 			}
 			return saveCodeHashes(s.db, ctx.UserOp.GetUserOpHash(ctx.EntryPoint, ctx.ChainID), ch)
 		})
+		return g.Wait()
+	}
+}
+
+// SimulateOp returns a UserOpHandler that runs through simulation of new UserOps with the EntryPoint.
+func (s *Standalone) TSimulateOp() modules.UserOpHandlerFunc {
+	return func(ctx *modules.UserOpHandlerCtx) error {
+		gc := getCodeWithEthClient(s.eth)
+		g := new(errgroup.Group)
+		g.Go(func() error {
+			ic, err := simulation.TraceSimulateValidation(
+				s.rpc,
+				ctx.EntryPoint,
+				ctx.UserOp,
+				ctx.ChainID,
+				s.tracer,
+				simulation.EntityStakes{
+					ctx.UserOp.GetFactory():   ctx.GetDepositInfo(ctx.UserOp.GetFactory()),
+					ctx.UserOp.Sender:         ctx.GetDepositInfo(ctx.UserOp.Sender),
+					ctx.UserOp.GetPaymaster(): ctx.GetDepositInfo(ctx.UserOp.GetPaymaster()),
+				},
+			)
+			if err != nil {
+				return errors.NewRPCError(errors.BANNED_OPCODE, err.Error(), err.Error())
+			}
+
+			ch, err := getCodeHashes(ic, gc)
+			if err != nil {
+				return errors.NewRPCError(errors.BANNED_OPCODE, err.Error(), err.Error())
+			}
+			return saveCodeHashes(s.db, ctx.UserOp.GetUserOpHash(ctx.EntryPoint, ctx.ChainID), ch)
+		})
+		//simulation.SimulateValidation
 
 		return g.Wait()
 	}

@@ -89,8 +89,8 @@ func PrivateMode() {
 	c.UseModules(
 		check.ValidateOpValues(),
 		paymaster.CheckStatus(),
-		check.SimulateOpNoCheck(),
-		//check.SimulateOp(),
+		//check.SimulateOpNoCheck(),
+		check.SimulateOp(),
 		paymaster.IncOpsSeen(),
 	)
 
