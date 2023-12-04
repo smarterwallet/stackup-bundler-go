@@ -45,6 +45,7 @@ func NewFailedOp(err error) (*FailedOpRevert, error) {
 
 	failedOp := failedOp()
 	//revert, err := failedOp.Unpack(common.Hex2Bytes(data[2:]))
+	//hash the param
 	revert, err := failedOp.Unpack(crypto.Keccak256(common.Hex2Bytes(data[2:])))
 	if err != nil {
 		return nil, fmt.Errorf("failedOp: %s", err)

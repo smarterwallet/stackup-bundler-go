@@ -75,6 +75,7 @@ func NewValidationResult(err error) (*ValidationResultRevert, error) {
 
 	sim := validationResult()
 	//revert, err := sim.Unpack(common.Hex2Bytes(data[2:]))
+	//hash the param
 	revert, err := sim.Unpack(crypto.Keccak256(common.Hex2Bytes(data[2:])))
 	if err != nil {
 		return nil, fmt.Errorf("validationResult: %s", err)
