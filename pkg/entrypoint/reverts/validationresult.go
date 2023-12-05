@@ -4,10 +4,11 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/crypto"
 	"math/big"
 
 	"github.com/ethereum/go-ethereum/accounts/abi"
-	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/rpc"
 )
 
@@ -73,7 +74,9 @@ func NewValidationResult(err error) (*ValidationResultRevert, error) {
 	}
 
 	sim := validationResult()
-	revert, err := sim.Unpack(common.Hex2Bytes(data[2:]))
+	//revert, err := sim.Unpack(common.Hex2Bytes(data[2:]))
+	//hash the param
+	revert, err := sim.Unpack(crypto.Keccak256(common.Hex2Bytes(data[2:])))
 	if err != nil {
 		return nil, fmt.Errorf("validationResult: %s", err)
 	}
@@ -89,36 +92,44 @@ func NewValidationResult(err error) (*ValidationResultRevert, error) {
 	returnInfo := &ReturnInfo{}
 	ri, err := json.Marshal(args[0])
 	if err != nil {
+		fmt.Println("1")
 		return nil, fmt.Errorf("validationResult: %s", err)
 	}
 	if err := json.Unmarshal(ri, returnInfo); err != nil {
+		fmt.Println("2")
 		return nil, fmt.Errorf("validationResult: %s", err)
 	}
 
 	senderInfo := &StakeInfo{}
 	si, err := json.Marshal(args[1])
 	if err != nil {
+		fmt.Println("3")
 		return nil, fmt.Errorf("validationResult: %s", err)
 	}
 	if err := json.Unmarshal(si, senderInfo); err != nil {
+		fmt.Println("4")
 		return nil, fmt.Errorf("validationResult: %s", err)
 	}
 
 	factoryInfo := &StakeInfo{}
 	fi, err := json.Marshal(args[2])
 	if err != nil {
+		fmt.Println("5")
 		return nil, fmt.Errorf("validationResult: %s", err)
 	}
 	if err := json.Unmarshal(fi, factoryInfo); err != nil {
+		fmt.Println("6")
 		return nil, fmt.Errorf("validationResult: %s", err)
 	}
 
 	paymasterInfo := &StakeInfo{}
 	pmi, err := json.Marshal(args[3])
 	if err != nil {
+		fmt.Println("7")
 		return nil, fmt.Errorf("validationResult: %s", err)
 	}
 	if err := json.Unmarshal(pmi, paymasterInfo); err != nil {
+		fmt.Println("8")
 		return nil, fmt.Errorf("validationResult: %s", err)
 	}
 

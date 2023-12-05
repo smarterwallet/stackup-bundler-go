@@ -3,10 +3,11 @@ package reverts
 import (
 	"errors"
 	"fmt"
+	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/crypto"
 	"math/big"
 
 	"github.com/ethereum/go-ethereum/accounts/abi"
-	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/rpc"
 )
 
@@ -43,7 +44,9 @@ func NewFailedOp(err error) (*FailedOpRevert, error) {
 	}
 
 	failedOp := failedOp()
-	revert, err := failedOp.Unpack(common.Hex2Bytes(data[2:]))
+	//revert, err := failedOp.Unpack(common.Hex2Bytes(data[2:]))
+	//hash the param
+	revert, err := failedOp.Unpack(crypto.Keccak256(common.Hex2Bytes(data[2:])))
 	if err != nil {
 		return nil, fmt.Errorf("failedOp: %s", err)
 	}
