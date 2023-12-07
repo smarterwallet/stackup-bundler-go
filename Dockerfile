@@ -29,6 +29,8 @@ RUN set -x && apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -
 # Copy the binary to the production image from the builder stage.
 COPY --from=builder /app/stackup-bundler /app/stackup-bundler
 
+RUN mkdir /app/data
+
 EXPOSE 4337
 
 CMD ["/app/stackup-bundler", "start", "--mode", "private"]
