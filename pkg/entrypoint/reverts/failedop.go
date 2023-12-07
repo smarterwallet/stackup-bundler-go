@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/crypto"
 	"math/big"
 
 	"github.com/ethereum/go-ethereum/accounts/abi"
@@ -12,15 +11,18 @@ import (
 )
 
 type FailedOpRevert struct {
-	OpIndex int
-	Reason  string
+	OpIndex   int
+	Paymaster common.Address
+	Reason    string
 }
 
 func failedOp() abi.Error {
 	opIndex, _ := abi.NewType("uint256", "uint256", nil)
+	paymaster, _ := abi.NewType("address", "address", nil)
 	reason, _ := abi.NewType("string", "string", nil)
 	return abi.NewError("FailedOp", abi.Arguments{
 		{Name: "opIndex", Type: opIndex},
+		{Name: "paymaster", Type: paymaster},
 		{Name: "reason", Type: reason},
 	})
 }
@@ -44,9 +46,9 @@ func NewFailedOp(err error) (*FailedOpRevert, error) {
 	}
 
 	failedOp := failedOp()
-	//revert, err := failedOp.Unpack(common.Hex2Bytes(data[2:]))
+	revert, err := failedOp.Unpack(common.Hex2Bytes(data[2:]))
 	//hash the param
-	revert, err := failedOp.Unpack(crypto.Keccak256(common.Hex2Bytes(data[2:])))
+	//revert, err := failedOp.Unpack(crypto.Keccak256(common.Hex2Bytes(data[2:])))
 	if err != nil {
 		return nil, fmt.Errorf("failedOp: %s", err)
 	}
@@ -55,8 +57,8 @@ func NewFailedOp(err error) (*FailedOpRevert, error) {
 	if !ok {
 		return nil, errors.New("failedOp: cannot assert type: args is not of type []any")
 	}
-	if len(args) != 2 {
-		return nil, fmt.Errorf("failedOp: invalid args length: expected 2, got %d", len(args))
+	if len(args) != 3 {
+		return nil, fmt.Errorf("failedOp: invalid args length: expected 3, got %d", len(args))
 	}
 
 	opIndex, ok := args[0].(*big.Int)
@@ -64,13 +66,19 @@ func NewFailedOp(err error) (*FailedOpRevert, error) {
 		return nil, errors.New("failedOp: cannot assert type: opIndex is not of type *big.Int")
 	}
 
-	reason, ok := args[1].(string)
+	paymaster, ok := args[1].(common.Address)
+	if !ok {
+		return nil, errors.New("failedOp: cannot assert type: paymaster is not of type string")
+	}
+
+	reason, ok := args[2].(string)
 	if !ok {
 		return nil, errors.New("failedOp: cannot assert type: reason is not of type string")
 	}
 
 	return &FailedOpRevert{
-		OpIndex: int(opIndex.Int64()),
-		Reason:  reason,
+		OpIndex:   int(opIndex.Int64()),
+		Paymaster: paymaster,
+		Reason:    reason,
 	}, nil
 }

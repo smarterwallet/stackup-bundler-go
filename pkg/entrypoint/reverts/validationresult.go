@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/crypto"
 	"math/big"
 
 	"github.com/ethereum/go-ethereum/accounts/abi"
@@ -38,8 +37,8 @@ var (
 		{Name: "preOpGas", Type: "uint256"},
 		{Name: "prefund", Type: "uint256"},
 		{Name: "sigFailed", Type: "bool"},
-		{Name: "validAfter", Type: "uint48"},
-		{Name: "validUntil", Type: "uint48"},
+		{Name: "validAfter", Type: "uint64"},
+		{Name: "validUntil", Type: "uint64"},
 		{Name: "paymasterContext", Type: "bytes"},
 	}
 	stakeInfoType = []abi.ArgumentMarshaling{
@@ -74,9 +73,7 @@ func NewValidationResult(err error) (*ValidationResultRevert, error) {
 	}
 
 	sim := validationResult()
-	//revert, err := sim.Unpack(common.Hex2Bytes(data[2:]))
-	//hash the param
-	revert, err := sim.Unpack(crypto.Keccak256(common.Hex2Bytes(data[2:])))
+	revert, err := sim.Unpack(common.Hex2Bytes(data[2:]))
 	if err != nil {
 		return nil, fmt.Errorf("validationResult: %s", err)
 	}

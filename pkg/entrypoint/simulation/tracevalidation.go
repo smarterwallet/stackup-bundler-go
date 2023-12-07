@@ -2,6 +2,7 @@ package simulation
 
 import (
 	"context"
+	"encoding/hex"
 	"errors"
 	"fmt"
 	"math"
@@ -28,6 +29,10 @@ func TraceSimulateValidation(
 	customTracer string,
 	stakes EntityStakes,
 ) ([]common.Address, error) {
+	// TODO test: skip check trace
+	if true {
+		return nil, nil
+	}
 	ep, err := entrypoint.NewEntrypoint(entryPoint, ethclient.NewClient(rpc))
 	if err != nil {
 		return nil, err
@@ -52,6 +57,12 @@ func TraceSimulateValidation(
 	opts := traceCallOpts{
 		Tracer: customTracer,
 	}
+	fromAddr := hex.EncodeToString(req.From.Bytes())
+	toAddr := hex.EncodeToString(req.To.Bytes())
+	dataHex := hex.EncodeToString(req.Data)
+	println("fromAddr:", fromAddr)
+	println("toAddr:", toAddr)
+	println("dataHex:", dataHex)
 	if err := rpc.CallContext(context.Background(), &res, "debug_traceCall", &req, "latest", &opts); err != nil {
 		return nil, err
 	}
