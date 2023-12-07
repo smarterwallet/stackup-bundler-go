@@ -12,6 +12,8 @@ services:
     command: /app/stackup-bundler start --mode private
     ports:
       - 4337:4337
+    volumes:
+      - ./stackup_bundler:/tmp/stackup_bundler
   stackup-bundler-fuji:
     build:
       context: .
@@ -25,4 +27,6 @@ services:
     command: /app/stackup-bundler start --mode private
     ports:
       - 4337:4337
+    volumes:
+      - ./stackup_bundler:/tmp/stackup_bundler
 
