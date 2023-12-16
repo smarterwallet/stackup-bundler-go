@@ -3,6 +3,7 @@ package transaction
 import (
 	bytesPkg "bytes"
 	"context"
+	"github.com/spf13/viper"
 	"math"
 	"math/big"
 
@@ -54,10 +55,11 @@ func EstimateHandleOpsGas(
 		return 0, nil, err
 	}
 
+	gasLimit := uint64(math.Min(float64(tx.Gas()), float64(viper.GetInt64("erc4337_bundler_max_gaslimit"))))
 	est, err := eth.EstimateGas(context.Background(), ethereum.CallMsg{
 		From:       eoa.Address,
 		To:         tx.To(),
-		Gas:        tx.Gas(),
+		Gas:        gasLimit,
 		GasPrice:   tx.GasPrice(),
 		GasFeeCap:  tx.GasFeeCap(),
 		GasTipCap:  tx.GasTipCap(),
