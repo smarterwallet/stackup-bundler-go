@@ -19,3 +19,4 @@
 tmp
 .env
 stackup_bundler
+/stackup-bundler
