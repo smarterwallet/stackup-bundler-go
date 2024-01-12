@@ -17,7 +17,9 @@
 # misc
 .DS_Store
 tmp
-.env
+.env*
 stackup_bundler
 /stackup-bundler
 /dist/
+/.idea
+

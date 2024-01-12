@@ -15,6 +15,9 @@ func filterUserOperationEvent(
 	userOpHash string,
 	entryPoint common.Address,
 ) (*entrypoint.EntrypointUserOperationEventIterator, error) {
+	println("userOpHash", userOpHash)
+	println("entryPoint", entryPoint.Hex())
+
 	ep, err := entrypoint.NewEntrypoint(entryPoint, eth)
 	if err != nil {
 		return nil, err
@@ -29,6 +32,9 @@ func filterUserOperationEvent(
 	if sub10kBlk.Cmp(startBlk) > 0 {
 		startBlk = sub10kBlk
 	}
+
+	println("startBlk", startBlk)
+	println("toBlk", toBlk)
 
 	return ep.FilterUserOperationEvent(
 		&bind.FilterOpts{Start: startBlk.Uint64()},
