@@ -15,9 +15,6 @@ func filterUserOperationEvent(
 	userOpHash string,
 	entryPoint common.Address,
 ) (*entrypoint.EntrypointUserOperationEventIterator, error) {
-	println("userOpHash", userOpHash)
-	println("entryPoint", entryPoint.Hex())
-
 	ep, err := entrypoint.NewEntrypoint(entryPoint, eth)
 	if err != nil {
 		return nil, err
@@ -32,10 +29,6 @@ func filterUserOperationEvent(
 	if sub10kBlk.Cmp(startBlk) > 0 {
 		startBlk = sub10kBlk
 	}
-
-	println("gap", big.NewInt(viper.GetInt64("erc4337_bundler_get_logs_gap")).String())
-	println("startBlk", startBlk.String())
-	println("toBlk", toBlk.String())
 
 	return ep.FilterUserOperationEvent(
 		&bind.FilterOpts{Start: startBlk.Uint64()},
