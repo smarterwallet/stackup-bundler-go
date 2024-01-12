@@ -33,8 +33,8 @@ func filterUserOperationEvent(
 		startBlk = sub10kBlk
 	}
 
-	println("startBlk", startBlk)
-	println("toBlk", toBlk)
+	println("startBlk", startBlk.String())
+	println("toBlk", toBlk.String())
 
 	return ep.FilterUserOperationEvent(
 		&bind.FilterOpts{Start: startBlk.Uint64()},
