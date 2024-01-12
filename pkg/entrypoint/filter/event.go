@@ -33,6 +33,7 @@ func filterUserOperationEvent(
 		startBlk = sub10kBlk
 	}
 
+	println("gap", big.NewInt(viper.GetInt64("erc4337_bundler_get_logs_gap")).String())
 	println("startBlk", startBlk.String())
 	println("toBlk", toBlk.String())
 
